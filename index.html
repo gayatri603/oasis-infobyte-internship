@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Advanced Temperature Converter</title>
+
+<style>
+:root{
+  --bg:#f4f6f9;
+  --card:#ffffff;
+  --text:#222;
+  --accent:#4facfe;
+}
+.dark{
+  --bg:#1e1e2f;
+  --card:#2c2c3e;
+  --text:#fff;
+  --accent:#00c6ff;
+}
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  transition:.3s;
+}
+.container{
+  background:var(--card);
+  padding:25px;
+  border-radius:12px;
+  width:90%;
+  max-width:380px;
+  text-align:center;
+  box-shadow:0 8px 20px rgba(0,0,0,.15);
+  transition:.3s;
+}
+h2{margin-bottom:15px;color:var(--text);}
+input,select,button{
+  width:100%;
+  padding:10px;
+  margin:6px 0;
+  border-radius:6px;
+  border:1px solid #ccc;
+  font-size:15px;
+}
+button{
+  background:var(--accent);
+  color:#fff;
+  border:none;
+  cursor:pointer;
+  transition:.3s;
+}
+button:hover{opacity:.85;}
+.row{
+  display:flex;
+  gap:5px;
+}
+.result{
+  margin-top:12px;
+  font-weight:bold;
+  color:var(--text);
+}
+.small{
+  font-size:13px;
+  color:gray;
+}
+.toggle{
+  background:none;
+  border:none;
+  color:var(--accent);
+  cursor:pointer;
+  font-size:14px;
+  margin-top:5px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+  <h2>🌡️ Temperature Converter</h2>
+
+  <input type="number" id="inputTemp" placeholder="Enter temperature">
+
+  <div class="row">
+    <select id="fromUnit">
+      <option value="C">Celsius (°C)</option>
+      <option value="F">Fahrenheit (°F)</option>
+      <option value="K">Kelvin (K)</option>
+    </select>
+
+    <button onclick="swap()">⇄</button>
+
+    <select id="toUnit">
+      <option value="F">Fahrenheit (°F)</option>
+      <option value="C">Celsius (°C)</option>
+      <option value="K">Kelvin (K)</option>
+    </select>
+  </div>
+
+  <button onclick="convert()">Convert</button>
+  <button onclick="clearAll()">Clear</button>
+
+  <div class="result" id="result"></div>
+  <div class="small" id="formula"></div>
+
+  <button class="toggle" onclick="toggleMode()">🌗 Toggle Dark Mode</button>
+</div>
+
+<script>
+const input = document.getElementById("inputTemp");
+input.addEventListener("input", convert);
+
+function convert(){
+  let value = parseFloat(input.value);
+  let from = document.getElementById("fromUnit").value;
+  let to = document.getElementById("toUnit").value;
+  let result = document.getElementById("result");
+  let formula = document.getElementById("formula");
+
+  if(isNaN(value)){ result.innerHTML=""; formula.innerHTML=""; return;}
+
+  let c,f,k;
+
+  if(from==="C"){ c=value; f=(c*9/5)+32; k=c+273.15;}
+  if(from==="F"){ f=value; c=(f-32)*5/9; k=c+273.15;}
+  if(from==="K"){ k=value; c=k-273.15; f=(c*9/5)+32;}
+
+  let finalValue;
+  if(to==="C"){ finalValue=c; formula.innerHTML="(F − 32) × 5/9 or K − 273.15";}
+  if(to==="F"){ finalValue=f; formula.innerHTML="(C × 9/5) + 32";}
+  if(to==="K"){ finalValue=k; formula.innerHTML="C + 273.15";}
+
+  result.innerHTML = `${value} °${from} = ${finalValue.toFixed(2)} °${to}`;
+}
+
+function swap(){
+  let from = document.getElementById("fromUnit");
+  let to = document.getElementById("toUnit");
+  [from.value, to.value] = [to.value, from.value];
+  convert();
+}
+
+function clearAll(){
+  input.value="";
+  document.getElementById("result").innerHTML="";
+  document.getElementById("formula").innerHTML="";
+}
+
+function toggleMode(){
+  document.body.classList.toggle("dark");
+}
+</script>
+
+</body>
+</html>
